@@ -8,5 +8,4 @@ import br.com.arsolutions.domain.Pagamento;
 @Repository
 public interface PagamentoRepository extends JpaRepository<Pagamento, Integer> {
 
-
 }

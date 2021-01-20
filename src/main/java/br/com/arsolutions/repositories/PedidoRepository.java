@@ -8,5 +8,4 @@ import br.com.arsolutions.domain.Pedido;
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
-
 }

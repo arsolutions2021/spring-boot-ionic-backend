@@ -8,5 +8,4 @@ import br.com.arsolutions.domain.Categoria;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
 
-
 }

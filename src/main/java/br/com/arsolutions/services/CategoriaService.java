@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import br.com.arsolutions.domain.Categoria;
+import br.com.arsolutions.dto.CategoriaDTO;
 import br.com.arsolutions.repositories.CategoriaRepository;
 import br.com.arsolutions.services.exceptions.DataIntegrityException;
 import br.com.arsolutions.services.exceptions.ObjectNotFoundException;
@@ -26,41 +27,45 @@ public class CategoriaService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 	}
-	
+
 	public Categoria insert(Categoria obj) {
 		obj.setId(null);
 		return repo.save(obj);
 	}
-	
+
 	public Categoria update(Categoria obj) {
 		find(obj.getId());
 		return repo.save(obj);
 	}
-	
+
 	public void delete(Integer id) {
 		find(id);
 		try {
-		
+
 			repo.deleteById(id);
-			
+
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
-			
+
 		}
-		
+
 	}
-	
-	public List<Categoria> findAll(){
+
+	public List<Categoria> findAll() {
 		return repo.findAll();
-		
+
 	}
-	
+
 	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		
+
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		
+
 		return repo.findAll(pageRequest);
-		
+
+	}
+
+	public Categoria fromDTO(CategoriaDTO objDto) {
+		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 
 //	public Categoria find(Integer id) {

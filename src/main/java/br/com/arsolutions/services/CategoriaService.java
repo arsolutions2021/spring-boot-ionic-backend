@@ -68,13 +68,4 @@ public class CategoriaService {
 		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 
-//	public Categoria find(Integer id) {
-//		Optional<Categoria> obj = repo.findById(id);
-//		if (obj == null) {
-//			throw new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName(), null);
-//
-//		}
-//		return obj;
-//	}
-
 }

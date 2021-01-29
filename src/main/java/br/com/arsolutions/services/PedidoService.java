@@ -4,13 +4,15 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 //import org.springframework.data.domain.PageRequest;
 //import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//import br.com.arsolutions.domain.Cliente;
+import br.com.arsolutions.domain.Cliente;
 import br.com.arsolutions.domain.ItemPedido;
 import br.com.arsolutions.domain.PagamentoComBoleto;
 import br.com.arsolutions.domain.Pedido;
@@ -18,6 +20,8 @@ import br.com.arsolutions.domain.enums.EstadoPagamento;
 import br.com.arsolutions.repositories.ItemPedidoRepository;
 import br.com.arsolutions.repositories.PagamentoRepository;
 import br.com.arsolutions.repositories.PedidoRepository;
+import br.com.arsolutions.security.UserSS;
+import br.com.arsolutions.services.exceptions.AuthorizationException;
 import br.com.arsolutions.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -40,7 +44,7 @@ public class PedidoService {
 
 	@Autowired
 	private ClienteService clienteService;
-	
+
 	@Autowired
 	private EmailService emailService;
 
@@ -71,18 +75,18 @@ public class PedidoService {
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
 		emailService.sendOrderConfirmationHtmlEmail(obj);
-		
+
 //		System.out.println(obj);
 		return obj;
 	}
 
-//	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-//		UserSS user = UserService.authenticated();
-//		if (user == null) {
-//			throw new AuthorizationException("Acesso negado");
-//		}
-//		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-//		Cliente cliente = clienteService.find(user.getId());
-//		return repo.findByCliente(cliente, pageRequest);
-//	}
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente = clienteService.find(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
+	}
 }

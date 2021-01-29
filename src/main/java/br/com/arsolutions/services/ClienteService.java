@@ -15,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.arsolutions.domain.Cidade;
 import br.com.arsolutions.domain.Cliente;
 import br.com.arsolutions.domain.Endereco;
+import br.com.arsolutions.domain.enums.Perfil;
 import br.com.arsolutions.domain.enums.TipoCliente;
 import br.com.arsolutions.dto.ClienteDTO;
 import br.com.arsolutions.dto.ClienteNewDTO;
 //import br.com.arsolutions.repositories.CidadeRepository;
 import br.com.arsolutions.repositories.ClienteRepository;
 import br.com.arsolutions.repositories.EnderecoRepository;
+import br.com.arsolutions.security.UserSS;
+import br.com.arsolutions.services.exceptions.AuthorizationException;
 import br.com.arsolutions.services.exceptions.DataIntegrityException;
 import br.com.arsolutions.services.exceptions.ObjectNotFoundException;
 
@@ -40,6 +43,12 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 
 	public Cliente find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())){
+			throw new AuthorizationException("Acesso Negado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
